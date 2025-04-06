@@ -1,1 +1,1 @@
-# Frontend package
+# Pacote de frontend do SQL AI Chatbot 

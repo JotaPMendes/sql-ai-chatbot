@@ -1,0 +1,219 @@
+Vendas:
+  description: "Análise de vendas e desempenho comercial"
+  relationships:
+    - tables: ["SCHEMA.DATABASE.ORDERS", "SCHEMA.DATABASE.CUSTOMERS"]
+      join_keys: ["CUSTOMER_ID", "REGION"]
+    - tables: ["SCHEMA.DATABASE.ORDERS", "SCHEMA.DATABASE.PRODUCTS"]
+      join_keys: ["PRODUCT_ID", "CATEGORY"]
+    - tables: ["SCHEMA.DATABASE.CUSTOMERS", "SCHEMA.DATABASE.SUBSCRIPTIONS"]
+      join_keys: ["CUSTOMER_ID", "REGION"]
+  tables:
+    SCHEMA.DATABASE.ORDERS:
+      description: "Tabela principal de pedidos de clientes"
+      primary_key: "ORDER_ID"
+      columns:
+        ORDER_ID: "NUMBER"
+        CUSTOMER_ID: "NUMBER"
+        PRODUCT_ID: "NUMBER" 
+        ORDER_DATE: "DATE"
+        QUANTITY: "NUMBER"
+        UNIT_PRICE: "FLOAT"
+        TOTAL_PRICE: "FLOAT"
+        DISCOUNT: "FLOAT"
+        REGION: "TEXT"
+        STORE_ID: "NUMBER"
+        PAYMENT_METHOD: "TEXT"
+        ORDER_STATUS: "TEXT"
+        CREATED_AT: "TIMESTAMP_NTZ"
+        UPDATED_AT: "TIMESTAMP_NTZ"
+        CATEGORY_ID: "NUMBER"
+        IS_ONLINE: "BOOLEAN"
+        SHIPPING_COST: "FLOAT"
+        CURRENCY: "TEXT"
+    SCHEMA.DATABASE.CUSTOMERS:
+      description: "Tabela de informações dos clientes"
+      primary_key: "CUSTOMER_ID"
+      columns:
+        CUSTOMER_ID: "NUMBER"
+        FIRST_NAME: "TEXT"
+        LAST_NAME: "TEXT"
+        EMAIL: "TEXT"
+        PHONE: "TEXT"
+        ADDRESS: "TEXT"
+        CITY: "TEXT"
+        STATE: "TEXT"
+        POSTAL_CODE: "TEXT"
+        COUNTRY: "TEXT"
+        REGION: "TEXT"
+        CREATED_AT: "TIMESTAMP_NTZ"
+        UPDATED_AT: "TIMESTAMP_NTZ"
+        LAST_LOGIN: "TIMESTAMP_NTZ"
+        IS_ACTIVE: "BOOLEAN"
+        SIGNUP_SOURCE: "TEXT"
+    SCHEMA.DATABASE.PRODUCTS:
+      description: "Tabela de informações de produtos"
+      primary_key: "PRODUCT_ID"
+      columns:
+        PRODUCT_ID: "NUMBER"
+        PRODUCT_NAME: "TEXT"
+        DESCRIPTION: "TEXT"
+        CATEGORY_ID: "NUMBER"
+        CATEGORY_NAME: "TEXT"
+        BRAND_ID: "NUMBER"
+        BRAND_NAME: "TEXT"
+        SUPPLIER_ID: "NUMBER"
+        COST_PRICE: "FLOAT"
+        SELL_PRICE: "FLOAT"
+        STOCK_QUANTITY: "NUMBER"
+        CREATED_AT: "TIMESTAMP_NTZ"
+        UPDATED_AT: "TIMESTAMP_NTZ"
+        IS_ACTIVE: "BOOLEAN"
+        WEIGHT: "FLOAT"
+        DIMENSIONS: "TEXT"
+    SCHEMA.DATABASE.SUBSCRIPTIONS:
+      description: "Tabela de informações de assinaturas de clientes"
+      columns:
+        SUBSCRIPTION_ID: "NUMBER"
+        CUSTOMER_ID: "NUMBER"
+        PLAN_ID: "NUMBER"
+        PLAN_NAME: "TEXT"
+        START_DATE: "DATE"
+        END_DATE: "DATE"
+        BILLING_CYCLE: "TEXT"
+        PAYMENT_METHOD: "TEXT"
+        MONTHLY_COST: "FLOAT"
+        STATUS: "TEXT"
+        REGION: "TEXT"
+        CREATED_AT: "TIMESTAMP_NTZ"
+        UPDATED_AT: "TIMESTAMP_NTZ"
+        LAST_BILLING_DATE: "DATE"
+        NEXT_BILLING_DATE: "DATE"
+  aggregation_fields:
+    faturamento_total:
+      display_name: "Faturamento Total"
+      description: "Soma do valor total de vendas (TOTAL_PRICE)"
+      examples:
+        - "Qual foi o faturamento total por fornecedor no último mês?"
+        - "Mostre o faturamento diário dos últimos 7 dias"
+    quantidade_pedidos:
+      display_name: "Quantidade de Pedidos"
+      description: "Contagem de pedidos únicos (ORDER_ID)"
+      examples:
+        - "Quantos pedidos tivemos por dia na última semana?"
+        - "Qual a média diária de pedidos por região?"
+    ticket_medio:
+      display_name: "Ticket Médio"
+      description: "Valor médio por pedido (TOTAL_PRICE / COUNT(ORDER_ID))"
+      examples:
+        - "Qual o ticket médio por categoria de produto?"
+        - "Como está o ticket médio diário no último mês?"
+    clientes_ativos:
+      display_name: "Clientes Ativos"
+      description: "Contagem de clientes únicos com status ativo (CUSTOMER_ID onde IS_ACTIVE = true)"
+      examples:
+        - "Quantos clientes ativos temos por região?"
+        - "Como está crescendo nossa base de clientes ativos mês a mês?"
+
+Produtos:
+  description: "Catálogo e gestão de produtos"
+  relationships:
+    - tables: ["SCHEMA.DATABASE.PRODUCTS", "SCHEMA.DATABASE.INVENTORY"]
+      join_keys: ["PRODUCT_ID"]
+    - tables: ["SCHEMA.DATABASE.PRODUCTS", "SCHEMA.DATABASE.SUPPLIERS"]
+      join_keys: ["SUPPLIER_ID"]
+    - tables: ["SCHEMA.DATABASE.INVENTORY", "SCHEMA.DATABASE.WAREHOUSE"]
+      join_keys: ["WAREHOUSE_ID"]
+  tables:
+    SCHEMA.DATABASE.PRODUCTS:
+      description: "Tabela de informações de produtos"
+      primary_key: "PRODUCT_ID"
+      columns:
+        PRODUCT_ID: "NUMBER"
+        PRODUCT_NAME: "TEXT"
+        DESCRIPTION: "TEXT"
+        CATEGORY_ID: "NUMBER"
+        CATEGORY_NAME: "TEXT"
+        BRAND_ID: "NUMBER"
+        BRAND_NAME: "TEXT"
+        SUPPLIER_ID: "NUMBER"
+        COST_PRICE: "FLOAT"
+        SELL_PRICE: "FLOAT"
+        CREATED_AT: "TIMESTAMP_NTZ"
+        UPDATED_AT: "TIMESTAMP_NTZ"
+        IS_ACTIVE: "BOOLEAN"
+        WEIGHT: "FLOAT"
+        DIMENSIONS: "TEXT"
+    SCHEMA.DATABASE.INVENTORY:
+      description: "Tabela de níveis de estoque de produtos"
+      columns:
+        INVENTORY_ID: "NUMBER"
+        PRODUCT_ID: "NUMBER"
+        WAREHOUSE_ID: "NUMBER"
+        STOCK_QUANTITY: "NUMBER"
+        REORDER_LEVEL: "NUMBER"
+        LAST_RESTOCK_DATE: "DATE"
+        NEXT_RESTOCK_DATE: "DATE"
+        MIN_STOCK_LEVEL: "NUMBER"
+        MAX_STOCK_LEVEL: "NUMBER"
+        CREATED_AT: "TIMESTAMP_NTZ"
+        UPDATED_AT: "TIMESTAMP_NTZ"
+        SKU: "TEXT"
+        BATCH_NUMBER: "TEXT"
+        EXPIRY_DATE: "DATE"
+        IS_AVAILABLE: "BOOLEAN"
+    SCHEMA.DATABASE.SUPPLIERS:
+      description: "Tabela de informações de fornecedores"
+      columns:
+        SUPPLIER_ID: "NUMBER"
+        SUPPLIER_NAME: "TEXT"
+        CONTACT_NAME: "TEXT"
+        CONTACT_EMAIL: "TEXT"
+        CONTACT_PHONE: "TEXT"
+        ADDRESS: "TEXT"
+        CITY: "TEXT"
+        STATE: "TEXT"
+        POSTAL_CODE: "TEXT"
+        COUNTRY: "TEXT"
+        CREATED_AT: "TIMESTAMP_NTZ"
+        UPDATED_AT: "TIMESTAMP_NTZ"
+        PAYMENT_TERMS: "TEXT"
+        SHIPPING_TERMS: "TEXT"
+        RATING: "FLOAT"
+        IS_ACTIVE: "BOOLEAN"
+    SCHEMA.DATABASE.WAREHOUSE:
+      description: "Tabela de informações de armazéns"
+      columns:
+        WAREHOUSE_ID: "NUMBER"
+        WAREHOUSE_NAME: "TEXT"
+        ADDRESS: "TEXT"
+        CITY: "TEXT"
+        STATE: "TEXT"
+        POSTAL_CODE: "TEXT"
+        COUNTRY: "TEXT"
+        REGION: "TEXT"
+        CAPACITY: "NUMBER"
+        MANAGER_ID: "NUMBER"
+        CREATED_AT: "TIMESTAMP_NTZ"
+        UPDATED_AT: "TIMESTAMP_NTZ"
+        IS_ACTIVE: "BOOLEAN"
+        TYPE: "TEXT"
+        AREA_SQM: "FLOAT"
+  aggregation_fields:
+    valor_estoque:
+      display_name: "Valor em Estoque"
+      description: "Valor total do estoque (STOCK_QUANTITY * COST_PRICE)"
+      examples:
+        - "Qual é o valor total em estoque por armazém?"
+        - "Como está distribuído o valor em estoque por categoria de produto?"
+    rotatividade_estoque:
+      display_name: "Rotatividade de Estoque"
+      description: "Taxa de rotatividade do estoque (Vendas / Valor médio do estoque)"
+      examples:
+        - "Qual é a rotatividade de estoque por categoria no último trimestre?"
+        - "Quais produtos têm a maior rotatividade de estoque?"
+    nivel_disponibilidade:
+      display_name: "Nível de Disponibilidade"
+      description: "Percentual de produtos disponíveis em estoque (COUNT onde IS_AVAILABLE = true / COUNT total)"
+      examples:
+        - "Qual é o nível de disponibilidade de produtos por categoria?"
+        - "Como evoluiu a disponibilidade de produtos nos últimos 3 meses?" 

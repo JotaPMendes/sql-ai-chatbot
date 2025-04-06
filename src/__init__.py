@@ -1,1 +1,1 @@
-# SQL AI Chatbot package
+# SQL AI Chatbot - Gerador de consultas SQL a partir de linguagem natural 

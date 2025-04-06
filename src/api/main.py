@@ -130,7 +130,7 @@ async def check_token_usage(request: TokenTestRequest):
     """Verificar o consumo de tokens para um determinado texto"""
     try:
         input_tokens = len(request.text.split())
-        estimated_cost = (input_tokens / 1000) * 0.00144
+        estimated_cost = (input_tokens / 1000) * 0.00144 # Atribuindo (0.0007 / 1k tokens de input + 0.0027 / 1k tokens de input (cache miss) + 0.0110 / 1k tokens de output)
         
         return {
             "status": "success",
@@ -148,4 +148,4 @@ async def check_token_usage(request: TokenTestRequest):
 # Se executado diretamente
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True) 
